@@ -13,13 +13,13 @@ class BBDD
 
     private function connect() :void
     {
-        $this->obj_db = new mysqli('p:'.$this->arr_connection['database']['HOST_DB'], $this->arr_connection['database']['USER_DB'], $this->arr_connection['database']['PASSWORD_DB'], 'information_schema');
+        $this->obj_db = new mysqli('p:'.$this->arr_connection['database']['HOST_DB'], $this->arr_connection['database']['USER_DB'], $this->arr_connection['database']['PASSWORD_DB'], 'INFORMATION_SCHEMA');
         if ($this->obj_db->connect_errno > 0) {
             die('Unable to connect to database [' . $this->obj_db->connect_error . ']');
         }
     }
 
-    public function searchColumnBySchema(string $columnName,string $schemaName) :array
+    public function searchColumnBySchema(String $columnName,String $schemaName) :array
     {
       if (!is_string($columnName)){
         throw new InvalidArgumentException($columnName . ' must be a string');
@@ -35,6 +35,7 @@ class BBDD
 
       $query = 'SELECT DISTINCT TABLE_NAME,DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS
                 WHERE (COLUMN_NAME = "'.strtoupper($columnName).'" OR COLUMN_NAME = "'.strtolower($columnName).'")  AND (TABLE_SCHEMA="'.strtoupper($schemaName).'" OR TABLE_SCHEMA="'.strtolower($schemaName).'")';
+
         return $this->executeQuery($query);
     }
     public function searchColumnInAllSchemas(string $columnName) :array
@@ -47,7 +48,7 @@ class BBDD
                 WHERE(COLUMN_NAME = "'.strtoupper($columnName).'" OR COLUMN_NAME = "'.strtolower($columnName).'")';
         return $this->executeQuery($query);
     }
-    public function searchValueInSchema(string $value,string $schemaName) :array
+    public function searchColumnValueInSchema(string $value,string $schemaName) :array
     {
       if (!is_string($value)){
         throw new InvalidArgumentException($schemaName . ' must be a string');
