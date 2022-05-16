@@ -62,16 +62,17 @@ class BBDD
         throw new Exception('Select another schema');
       }
 
-      $query = 'SELECT TABLE_NAME,COLUMN_NAME,DATA_TYPE from INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA="'.$schemaName.'"';
-      $dataFieldsSchema = $this->executeQuery($query);
       $arrResult = array();
       $textTypes = ['varchar','binary','varbinary','varbinary','tinytext','blob','text','mediumblob','mediumtext','longblob','longtext','enum','set'];
       $i = 0;
+      $query = 'SELECT TABLE_NAME,COLUMN_NAME,DATA_TYPE from INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA="'.$schemaName.'"';
+      $dataFieldsSchema = $this->executeQuery($query);
+      unset($query);
       foreach ($dataFieldsSchema as $field){
         if (in_array($field['DATA_TYPE'],$textTypes) ){
           $fieldName = $field['COLUMN_NAME'];
           $tableName = $schemaName.'.'.$field['TABLE_NAME'];
-          $fieldQuery = "SELECT {$fieldName} FROM {$tableName} WHERE {$fieldName}  = '$value'";
+          $fieldQuery = "SELECT {$fieldName} FROM {$tableName} WHERE {$fieldName}  = '$value' LIMIT 1";
           $searchResult = $this->executeQuery($fieldQuery);
           if (count($searchResult) > 0 )
           {
